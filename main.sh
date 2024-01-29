@@ -1,6 +1,7 @@
 #! /bin/bash
 
-source functions.sh
+. functions.sh
+. regex_patterns.sh
 
 main() {
     pass
