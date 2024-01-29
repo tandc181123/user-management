@@ -17,5 +17,15 @@ read_user_input() {
 }
 
 validate_user_input() {
-    pass
+    local data=$1
+    local regex=$2
+
+    echo "regex: $regex"
+
+    if grep -Pq "$regex" <<<"$data"; then
+        echo 0
+    else
+        echo 1
+    fi
+
 }
