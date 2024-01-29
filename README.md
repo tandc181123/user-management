@@ -1,9 +1,11 @@
-# linux-user-management
+# User Management with Bash and PostgreSQL (Under Maintenance)
 
-A collection of Bash scripts for streamlining Linux user management tasks. 
-This repository provides functionality for creating, updating, and deleting users while enforcing password complexity standards.
+This repository focuses on practical implementations of user management using Bash scripts and PostgreSQL. It provides a simplified yet powerful solution for handling user authentication, PostgreSQL database integration, and more.
 
-Key Features:
-- Simplified user creation and deletion
-- Password complexity enforcement
-- User information updates
+## ⚠️ **Under Maintenance**
+This project is currently undergoing maintenance. During this period, some features may be unavailable, and updates might be sporadic. We appreciate your patience and understanding.
+
+We apologize for any inconvenience this may cause. 
+
+## Features
+...
