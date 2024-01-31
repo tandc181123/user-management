@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# sources
-script_dir=$(dirname "${BASH_SOURCE[0]}")
-. "$script_dir/../functions.sh"
-. "$script_dir/../regex_patterns.sh"
+function set_up() {
+  ROOT_DIR="$(dirname "${BASH_SOURCE[0]}")/.."
+  source "$ROOT_DIR/functions.sh"
+  source "$ROOT_DIR/regex_patterns.sh"
+}
 
 # password_regex=^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^[:alnum:]_])$
 # password-length limitation {8,12}
