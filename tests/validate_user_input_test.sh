@@ -16,9 +16,7 @@ function provide_valid_length_passwords() {
 
 # data_provider provide_valid_length_passwords
 function test_valid_password_length() {
-  local item=$1
-  result=$(validate_user_input "$item" "$password_regex")
-  assert_equals "0" "$result"
+  assert_equals "0" "$(validate_user_input "$1" "$password_regex")"
 }
 
 function provide_invalid_length_passwords() {
@@ -28,9 +26,7 @@ function provide_invalid_length_passwords() {
 
 # data_provider provide_invalid_length_passwords
 function test_invalid_password_length() {
-  local item=$1
-  result=$(validate_user_input "$item" "$password_regex")
-  assert_equals "1" "$result"
+  assert_equals "1" "$(validate_user_input "$1" "$password_regex")"
 }
 
 # password-forbidden characters [^[:space:]\\\/\%\=\'\"\<\>\,\*\?]
@@ -42,7 +38,5 @@ function provide_passwords_with_forbidden_chars() {
 
 # data_provider provide_passwords_with_forbidden_chars
 function test_password_contains_forbiden_chars() {
-  local item=$1
-  result=$(validate_user_input "$item" "$password_regex")
-  assert_equals "1" "$result"
+  assert_equals "1" "$(validate_user_input "$1" "$password_regex")"
 }
