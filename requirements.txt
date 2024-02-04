@@ -1,0 +1,31 @@
+unit_tests
+
+    validate_user_input
+        username
+            []length limit
+            []forbidden characters
+            []
+        password
+            [v]length limit
+            [v]forbidden characters
+            []required characters
+        email
+            []length
+            []
+            []
+        
+
+    read_user_input
+    []
+    []
+
+
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+
