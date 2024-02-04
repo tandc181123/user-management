@@ -1,42 +1,5 @@
 #!/bin/bash
 
-function set_up() {
-  ROOT_DIR="$(dirname "${BASH_SOURCE[0]}")/.."
-  source "$ROOT_DIR/functions.sh"
-  source "$ROOT_DIR/regex_patterns.sh"
-}
-
-# password_regex=^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^[:alnum:]_])$
-# password-length limitation {8,12}
-
-function provide_valid_length_passwords() {
-  local items=("Aa!12345" "Aa!123456" "Aa!1234567" "Aa!12345678" "Aa!123456789")
-  echo "${items[@]}"
-}
-
-# data_provider provide_valid_length_passwords
-function test_valid_password_length() {
-  assert_equals "0" "$(validate_user_input "$1" "$password_regex")"
-}
-
-function provide_invalid_length_passwords() {
-  local items=("" "Ab!1" "Ab!12" "Ab!123" "Ab!1234" "Aa!1234567891" "Aa!12345678912")
-  echo "${items[@]}"
-}
-
-# data_provider provide_invalid_length_passwords
-function test_invalid_password_length() {
-  assert_equals "1" "$(validate_user_input "$1" "$password_regex")"
-}
-
-# password-forbidden characters [^[:space:]\\\/\%\=\'\"\<\>\,\*\?]
-
-function provide_passwords_with_forbidden_chars() {
-  local items=("Ac!1234 " "Ac!1234\\" "Ac!1234/" "Ac!1234%" "Ac!1234=" "Ac!1234'" "Ac!1234\"" "Ac!1234<" "Ac!1234>" "Ac!1234," "Ac!1234*" "Ac!1234?")
-  echo "${items[@]}"
-}
-
-# data_provider provide_passwords_with_forbidden_chars
-function test_password_contains_forbiden_chars() {
-  assert_equals "1" "$(validate_user_input "$1" "$password_regex")"
-}
+ROOT_DIR="$(dirname "${BASH_SOURCE[0]}")/.."
+source "$ROOT_DIR/functions.sh"
+source "$ROOT_DIR/generate_functions"
