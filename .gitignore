@@ -1,8 +1,0 @@
-# Ignore .env file
-.env
-
-# Ignore lib/
-lib/
-
-# Ignore requirements.txt
-requirements.txt
