@@ -16,14 +16,17 @@ read_user_input() {
 
 }
 
-validate_user_input() {
-    local data=$1
+function test_regex() {
+    local items=$1
     local regex=$2
 
-    if grep -Pq "$regex" <<<"$data"; then
-        echo 0
-    else
-        echo 1
-    fi
-
+    for item in $items; do
+        result=$(grep -P "$regex" <<<"$item")
+        if [[ $result != "$item" ]]; then
+            red=$(tput setaf 1)
+            bold=$(tput bold)
+            reset=$(tput sgr0)
+            echo "${red}${bold}Failed!${reset} regex test '$regex' '${bold}${item}${reset}'"
+        fi
+    done
 }
