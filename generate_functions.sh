@@ -11,7 +11,7 @@
 # Usage:
 #   upper_char=$(generate_random_alphabet "upper")
 #   lower_char=$(generate_random_alphabet "lower")
-function generate_random_alphabet() {
+function random_alphabet() {
     local case=$1
     local upper=({A..Z})
     local lower=({a..z})
@@ -27,7 +27,7 @@ function generate_random_alphabet() {
 # This function selects a symbol randomly from a list of symbols.
 # Usage:
 #   symbol=$(generate_random_symbol)
-function generate_random_symbol() {
+function random_symbol() {
     local symbols=("#" "$" "^" "-" "_" "[" "]" "{" "}" "~" "\`" "|")
     echo "${symbols[((RANDOM % 12))]}"
 }
@@ -37,7 +37,7 @@ function generate_random_symbol() {
 #   $1: Number of digits
 # Usage:
 #   result=$(generate_number 5)
-function generate_number() {
+function number() {
     local type=$1
     local result
 
@@ -56,7 +56,7 @@ function generate_number() {
 #   $1: Number of digits
 # Usage:
 #   result=$(generate_unrealistic_number 5)
-function generate_unrealistic_number() {
+function unrealistic_number() {
     local num_digits=$1
     local result=""
 
@@ -65,3 +65,42 @@ function generate_unrealistic_number() {
     done
     echo "$result"
 }
+
+function selector() {
+    local result=""
+    while getopts "ulsn" opt; do
+        case $opt in
+        u)
+            result+=$(random_alphabet "upper")
+            ;;
+        l)
+            result+=$(random_alphabet "lower")
+            ;;
+        s)
+            result+=$(random_symbol)
+            ;;
+        n)
+            result+=$(unrealistic_number "1")
+            ;;
+
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            exit 1
+            ;;
+        :)
+            echo "Option -$OPTARG requires an argument." >&2
+            exit 1
+            ;;
+        esac
+    done
+    echo "$result"
+}
+
+function omg() {
+    eval "local range=($1)"
+    local random_length="${range[((RANDOM % ${#range[@]}))]}"
+    local methods="($2)"
+    local result=""
+}
+
+omg "{8..12}" "$(selector -lsn)"
