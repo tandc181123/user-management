@@ -67,22 +67,41 @@ function unrealistic_number() {
 }
 
 function selector() {
-    local result=""
-    while getopts "ulsn" opt; do
+    declare -a array
+    while getopts "ulsnr" opt; do
         case $opt in
         u)
-            result+=$(random_alphabet "upper")
+            array+=("$(random_alphabet "upper")")
             ;;
         l)
-            result+=$(random_alphabet "lower")
+            array+=("$(random_alphabet "lower")")
             ;;
         s)
-            result+=$(random_symbol)
+            array+=("$(random_symbol)")
             ;;
         n)
-            result+=$(unrealistic_number "1")
+            array+=("$(unrealistic_number "1")")
             ;;
+        r)
+            echo "Before: " "${array[@]}"
+            declare -a shuffled=("${array[@]}")
+            local length=${#shuffled[@]}
+            local i=0
+            while true; do
+                # Fisher-Yates shuffle algorithm
+                for ((i = length - 1; i > 0; i--)); do
+                    local j="$((RANDOM % (i + 1)))"
+                    local temp=${shuffled[i]}
+                    shuffled[i]=${shuffled[j]}
+                    shuffled[j]=$temp
+                done
 
+                if [[ "${shuffled[*]}" != "${array[*]}" ]]; then
+                    break
+                fi
+            done
+            echo "After: " "${shuffled[@]}"
+            ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
             exit 1
@@ -93,14 +112,13 @@ function selector() {
             ;;
         esac
     done
-    echo "$result"
 }
 
 function omg() {
     eval "local range=($1)"
     local random_length="${range[((RANDOM % ${#range[@]}))]}"
-    local methods="($2)"
-    local result=""
+    local in_sequence="$2"
+
 }
 
-omg "{8..12}" "$(selector -lsn)"
+selector -sulr
