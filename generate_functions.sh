@@ -11,7 +11,7 @@
 # Usage:
 #   upper_char=$(generate_random_alphabet "upper")
 #   lower_char=$(generate_random_alphabet "lower")
-function random_alphabet() {
+function generate_random_alphabet() {
     local case=$1
     local upper=({A..Z})
     local lower=({a..z})
@@ -27,7 +27,7 @@ function random_alphabet() {
 # This function selects a symbol randomly from a list of symbols.
 # Usage:
 #   symbol=$(generate_random_symbol)
-function random_symbol() {
+function generate_random_symbol() {
     local symbols=("#" "$" "^" "-" "_" "[" "]" "{" "}" "~" "\`" "|")
     echo "${symbols[((RANDOM % 12))]}"
 }
@@ -36,8 +36,8 @@ function random_symbol() {
 # Parameters:
 #   $1: Number of digits
 # Usage:
-#   result=$(generate_number 5)
-function number() {
+#   result=$(generate_random_number 5)
+function generate_random_number() {
     local type=$1
     local result
 
@@ -55,8 +55,8 @@ function number() {
 # Parameters:
 #   $1: Number of digits
 # Usage:
-#   result=$(generate_unrealistic_number 5)
-function unrealistic_number() {
+#   result=$(generate_random_unrealistic_number 5)
+function generate_random_unrealistic_number() {
     local num_digits=$1
     local result=""
 
@@ -66,59 +66,107 @@ function unrealistic_number() {
     echo "$result"
 }
 
-function selector() {
-    declare -a array
-    while getopts "ulsnr" opt; do
-        case $opt in
+# Generate a shuffled version of the input string using the Fisher-Yates shuffle algorithm.
+# Parameters:
+#   $1: Input string to be shuffled
+# Usage:
+#   shuffled_string=$(shuffle "input_string")
+function shuffle() {
+    local input="$1"
+    local length="${#input}"
+    local shuffled="$input"
+    local after=""
+
+    local -a chars=()
+    for ((i = 0; i < length; i++)); do
+        chars+=("${input:i:1}")
+    done
+
+    while true; do
+        # Fisher-Yates shuffle algorithm
+        for ((i = length - 1; i > 0; i--)); do
+            local j="$((RANDOM % (i + 1)))"
+            local temp="${chars[i]}"
+            chars[i]="${chars[j]}"
+            chars[j]="$temp"
+        done
+
+        after=$(printf '%s' "${chars[@]}")
+
+        if [[ "$after" != "$shuffled" ]]; then
+            shuffled="$after"
+            break
+        fi
+    done
+
+    echo "$shuffled"
+}
+
+# Generate a password based on the provided options and password length.
+# Parameters:
+#   $1: String containing options ('u' for uppercase, 'l' for lowercase, 's' for symbol, 'n' for number)
+#   $2: Length of the password
+# Usage:
+#   password=$(generate_password "options" 8)
+function generate_password() {
+    local options="$1"
+    local password_length="$2"
+
+    # Check if the password length is less than the number of options
+    if [[ $password_length -lt ${#options} ]]; then
+        echo "Password length is less than the number of options." >&2
+        return 1
+    fi
+
+    # Check if the options contain invalid characters
+    if [[ ! "${options}" =~ ^[ulsnr]+$ ]]; then
+        echo "Invalid options: ${options}" >&2
+        return 1
+    fi
+
+    local password=""
+
+    # Generate the initial part of the password based on the options
+    for ((i = 0; i < ${#options}; i++)); do
+        case "${options:$i:1}" in
         u)
-            array+=("$(random_alphabet "upper")")
+            password+=$(generate_random_alphabet "upper")
             ;;
         l)
-            array+=("$(random_alphabet "lower")")
+            password+=$(generate_random_alphabet "lower")
             ;;
         s)
-            array+=("$(random_symbol)")
+            password+=$(generate_random_symbol)
             ;;
         n)
-            array+=("$(unrealistic_number "1")")
-            ;;
-        r)
-            echo "Before: " "${array[@]}"
-            declare -a shuffled=("${array[@]}")
-            local length=${#shuffled[@]}
-            local i=0
-            while true; do
-                # Fisher-Yates shuffle algorithm
-                for ((i = length - 1; i > 0; i--)); do
-                    local j="$((RANDOM % (i + 1)))"
-                    local temp=${shuffled[i]}
-                    shuffled[i]=${shuffled[j]}
-                    shuffled[j]=$temp
-                done
-
-                if [[ "${shuffled[*]}" != "${array[*]}" ]]; then
-                    break
-                fi
-            done
-            echo "After: " "${shuffled[@]}"
-            ;;
-        \?)
-            echo "Invalid option: -$OPTARG" >&2
-            exit 1
-            ;;
-        :)
-            echo "Option -$OPTARG requires an argument." >&2
-            exit 1
+            password+=$(generate_random_unrealistic_number "1")
             ;;
         esac
     done
+
+    # Generate the remaining part of the password based on the options
+    for ((i = 0; i < (password_length - ${#options}); i++)); do
+        local option="${options:RANDOM%${#options}:1}"
+        case "$option" in
+        u)
+            password+=$(generate_random_alphabet "upper")
+            ;;
+        l)
+            password+=$(generate_random_alphabet "lower")
+            ;;
+        s)
+            password+=$(generate_random_symbol)
+            ;;
+        n)
+            password+=$(generate_random_unrealistic_number "1")
+            ;;
+        esac
+    done
+
+    echo "$password"
 }
 
-function omg() {
-    eval "local range=($1)"
-    local random_length="${range[((RANDOM % ${#range[@]}))]}"
-    local in_sequence="$2"
-
-}
-
-selector -sulr
+# Example usage:
+# Generate a password with 8 characters containing at least one uppercase letter and one symbol
+password=$(shuffle "$(generate_password "ulsn" 8)")
+echo "Generated password: $password"
